@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS meal
+(
+    id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS ingredient
+(
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    name         VARCHAR(255) NOT NULL,
+    calories     NUMERIC      NOT NULL,
+    fat          NUMERIC      NOT NULL,
+    carbohydrate NUMERIC      NOT NULL,
+    protein      NUMERIC      NOT NULL,
+    amount_g     NUMERIC      NOT NULL,
+    meal_id      INTEGER      NOT NULL,
+    FOREIGN KEY (meal_id) REFERENCES meal (id)
+);
+
+INSERT INTO meal (name) VALUES ('Breakfast');
+INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount_g, meal_id) VALUES ('chicken', 215, 15.1, 0, 18.6, 100, 1);
+INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount_g, meal_id) VALUES ('apple', 104, 0.3, 27.6, 0.5, 200, 1);
