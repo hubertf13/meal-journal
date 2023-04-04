@@ -37,19 +37,22 @@ public class IngredientDao {
         String query = "SELECT * FROM " + tableName;
 
         try (Connection connection = Database.connect()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();
-            ingredients.clear();
-            while (rs.next()) {
-                ingredients.add(new Ingredient(
-                        rs.getInt(idColumn),
-                        rs.getString(nameColumn),
-                        rs.getString(caloriesColumn),
-                        rs.getString(fatColumn),
-                        rs.getString(carbohydrateColumn),
-                        rs.getString(proteinColumn),
-                        rs.getString(amountGColumn),
-                        rs.getInt(mealId)));
+            if (connection != null) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet rs = statement.executeQuery();
+                ingredients.clear();
+
+                while (rs.next()) {
+                    ingredients.add(new Ingredient(
+                            rs.getInt(idColumn),
+                            rs.getString(nameColumn),
+                            rs.getString(caloriesColumn),
+                            rs.getString(fatColumn),
+                            rs.getString(carbohydrateColumn),
+                            rs.getString(proteinColumn),
+                            rs.getString(amountGColumn),
+                            rs.getInt(mealId)));
+                }
             }
         } catch (SQLException e) {
             Logger.getAnonymousLogger().log(

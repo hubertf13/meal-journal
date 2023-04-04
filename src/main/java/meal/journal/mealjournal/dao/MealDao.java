@@ -2,107 +2,117 @@ package meal.journal.mealjournal.dao;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import meal.journal.mealjournal.model.Ingredient;
+import meal.journal.mealjournal.model.Meal;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MealDao {
-//    private static final String tableName = "meal";
-//    private static final String idColumn = "id";
-//    private static final String nameColumn = "name";
-//
-//    private static final ObservableList<Meal> meals;
-//
-//    static {
-//        meals = FXCollections.observableArrayList();
-//        updateMealsFromDB();
-//    }
-//
-//    public static ObservableList<Ingredient> getIngredients() {
-//        return FXCollections.unmodifiableObservableList(ingredients);
-//    }
-//
-//    private static void updateMealsFromDB() {
-//
-//        String query = "SELECT * FROM " + tableName;
-//
-//        try (Connection connection = Database.connect()) {
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet rs = statement.executeQuery();
-//            ingredients.clear();
-//            while (rs.next()) {
-//                ingredients.add(new Ingredient(
-//                        rs.getInt(idColumn),
-//                        rs.getString(nameColumn),
-//                        rs.getString(caloriesColumn),
-//                        rs.getString(fatColumn),
-//                        rs.getString(carbohydrateColumn),
-//                        rs.getString(proteinColumn),
-//                        rs.getString(amountGColumn),
-//                        rs.getInt(mealId)));
-//            }
-//        } catch (SQLException e) {
-//            Logger.getAnonymousLogger().log(
-//                    Level.SEVERE,
-//                    LocalDateTime.now() + ": Could not load Persons from database ");
-//            ingredients.clear();
-//        }
-//    }
-//
-//    public static void update(Ingredient newIngredient) {
-//        //udpate database
-//        long rows = CRUDHelper.update(
-//                tableName,
-//                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountGColumn, mealId},
-//                new Object[]{newIngredient.getName(), newIngredient.getCalories(), newIngredient.getFat(), newIngredient.getCarbohydrate(), newIngredient.getProtein(), newIngredient.getAmountG(), newIngredient.getMealId()},
-//                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.INTEGER},
-//                idColumn,
-//                Types.INTEGER,
-//                newIngredient.getId()
-//        );
-//
-//        if (rows == 0)
-//            throw new IllegalStateException("Person to be updated with id " + newIngredient.getId() + " didn't exist in database");
-//
-//        //update cache
-//        Optional<Ingredient> optionalIngredient = getPerson(newIngredient.getId());
-//        optionalIngredient.ifPresentOrElse((oldIngredient) -> {
-//            ingredients.remove(oldIngredient);
-//            ingredients.add(newIngredient);
-//        }, () -> {
-//            throw new IllegalStateException("Person to be updated with id " + newIngredient.getId() + " didn't exist in database");
-//        });
-//    }
-//
-//    public static void insertIngredient(String name, String calories, String fat, String carbohydrate, String protein, String amountG, int inMealId) {
-//        //update database
-//        int id = (int) CRUDHelper.create(
-//                tableName,
-//                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountGColumn, mealId},
-//                new Object[]{name, calories, fat, carbohydrate, protein, amountG, inMealId},
-//                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.INTEGER});
-//
-//        //update cache
-//        ingredients.add(new Ingredient(id, name, calories, fat, carbohydrate, protein, amountG, inMealId));
-//    }
-//
-//    public static void delete(int id) {
-//        //update database
-//        CRUDHelper.delete(tableName, id);
-//
-//        //update cache
-//        Optional<Ingredient> person = getPerson(id);
-//        person.ifPresent(ingredients::remove);
-//
-//    }
-//
-//    public static Optional<Ingredient> getPerson(int id) {
-//        for (Ingredient ingredient : ingredients) {
-//            if (ingredient.getId() == id) return Optional.of(ingredient);
-//        }
-//        return Optional.empty();
-//    }
+    private static final String tableName = "meal";
+    private static final String idColumn = "id";
+    private static final String nameColumn = "name";
+
+    private static final ObservableList<Meal> meals;
+
+    static {
+        meals = FXCollections.observableArrayList();
+        updateMealsFromDB();
+    }
+
+    public static ObservableList<Meal> getMeals() {
+        return FXCollections.unmodifiableObservableList(meals);
+    }
+
+    private static void updateMealsFromDB() {
+
+        String query = "SELECT * FROM " + tableName;
+
+        try (Connection connection = Database.connect()) {
+            if (connection != null) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet rs = statement.executeQuery();
+                meals.clear();
+
+                while (rs.next()) {
+                    int mealId = rs.getInt(idColumn);
+                    List<Ingredient> mealIngredients = getMealIngredients(mealId);
+
+                    meals.add(new Meal(mealId, rs.getString(nameColumn), mealIngredients));
+                }
+                System.out.println(meals);
+            }
+        } catch (SQLException e) {
+            Logger.getAnonymousLogger().log(
+                    Level.SEVERE,
+                    LocalDateTime.now() + ": Could not load Meal from database ");
+            meals.clear();
+        }
+    }
+
+    private static List<Ingredient> getMealIngredients(int mealId) {
+        ObservableList<Ingredient> allIngredients = IngredientDao.getIngredients();
+        return allIngredients.stream()
+                .filter(ingredient -> ingredient.getMealId() == mealId)
+                .toList();
+    }
+
+    public static void update(Meal newMeal) {
+        //udpate database
+        long rows = CRUDHelper.update(
+                tableName,
+                new String[]{nameColumn},
+                new Object[]{newMeal.getName()},
+                new int[]{Types.VARCHAR},
+                idColumn,
+                Types.INTEGER,
+                newMeal.getId()
+        );
+
+        if (rows == 0)
+            throw new IllegalStateException("Meal to be updated with id " + newMeal.getId() + " didn't exist in database");
+
+        //update cache
+        Optional<Meal> optionalMeal = getMeal(newMeal.getId());
+        optionalMeal.ifPresentOrElse((oldMeal) -> {
+            meals.remove(oldMeal);
+            meals.add(newMeal);
+        }, () -> {
+            throw new IllegalStateException("Meal to be updated with id " + newMeal.getId() + " didn't exist in database");
+        });
+    }
+
+    public static void insertMeal(String name) {
+        //update database
+        int id = (int) CRUDHelper.create(
+                tableName,
+                new String[]{nameColumn},
+                new Object[]{name},
+                new int[]{Types.VARCHAR});
+
+        //update cache
+        meals.add(new Meal(id, name, new ArrayList<>()));
+    }
+
+    public static void delete(int id) {
+        //update database
+        CRUDHelper.delete(tableName, id);
+
+        //update cache
+        Optional<Meal> meal = getMeal(id);
+        meal.ifPresent(meals::remove);
+
+    }
+
+    public static Optional<Meal> getMeal(int id) {
+        for (Meal meal : meals) {
+            if (meal.getId() == id) return Optional.of(meal);
+        }
+        return Optional.empty();
+    }
 }

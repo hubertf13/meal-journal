@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Database {
-    private final static String DATABASE_LOCATION = "C:\\Users\\huber\\IdeaProjects\\EDP-PROJECT\\src\\main\\resources\\pl\\filipczuk\\edpproject\\database\\database";
+    private final static String DATABASE_LOCATION = "C:\\Users\\huber\\IdeaProjects\\MealJournal\\src\\main\\resources\\meal\\journal\\mealjournal\\database\\database";
     private static final String requiredTable = "meal";
 
     public static boolean isOK() {
