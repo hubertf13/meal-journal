@@ -1,7 +1,12 @@
 package meal.journal.mealjournal.dao;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,7 +102,13 @@ public class CRUDHelper {
                     queryBuilder.append("'");
                 }
                 case Types.INTEGER -> queryBuilder.append((int) values[i]);
-                case Types.NUMERIC -> queryBuilder.append(Double.parseDouble((String) values[i]));
+                case Types.NUMERIC -> {
+                    if (values[i] instanceof LocalDate date) {
+                        queryBuilder.append("'").append(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("'");
+                    } else {
+                        queryBuilder.append(Double.parseDouble((String) values[i]));
+                    }
+                }
             }
             if (i < number - 1) queryBuilder.append(", ");
         }
@@ -158,7 +169,13 @@ public class CRUDHelper {
                 queryBuilder.append("'");
             }
             case Types.INTEGER -> queryBuilder.append(value);
-            case Types.NUMERIC -> queryBuilder.append(Double.parseDouble((String) value));
+            case Types.NUMERIC -> {
+                if (value instanceof LocalDate date) {
+                    queryBuilder.append("'").append(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("'");
+                } else {
+                    queryBuilder.append(Double.parseDouble((String) value));
+                }
+            }
             default ->
                     throw new IllegalArgumentException("Index type " + type + " from sql.Types is not yet supported.");
         }

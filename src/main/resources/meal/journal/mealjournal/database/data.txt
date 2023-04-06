@@ -12,12 +12,12 @@ CREATE TABLE IF NOT EXISTS ingredient
     fat          NUMERIC      NOT NULL,
     carbohydrate NUMERIC      NOT NULL,
     protein      NUMERIC      NOT NULL,
-    amount_g     NUMERIC      NOT NULL,
+    amount       VARCHAR(255) NOT NULL,
     meal_id      INTEGER      NOT NULL,
     FOREIGN KEY (meal_id) REFERENCES meal (id)
 );
 
-INSERT INTO meal (name) VALUES ('Breakfast', CURRENT_DATE);
-INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount_g, meal_id) VALUES ('chicken', 215, 15.1, 0, 18.6, 100, 1);
-INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount_g, meal_id) VALUES ('apple', 104, 0.3, 27.6, 0.5, 200, 1);
-INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount_g, meal_id) VALUES ('rice', 540, 0.9, 119, 9.9, 150, 1);
+INSERT INTO meal (name, date) VALUES ('Breakfast', CURRENT_DATE);
+INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount, meal_id) VALUES ('chicken', 215, 15.1, 0, 18.6, '100.0gram', 1);
+INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount, meal_id) VALUES ('apple', 104, 0.3, 27.6, 0.5, '200.0gram', 1);
+INSERT INTO ingredient (name, calories, fat, carbohydrate, protein, amount, meal_id) VALUES ('rice', 540, 0.9, 119, 9.9, '150.0gram', 1);

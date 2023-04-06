@@ -6,6 +6,8 @@ module meal.journal.mealjournal {
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
     requires org.xerial.sqlitejdbc;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
 
     opens meal.journal.mealjournal to javafx.fxml;
     opens meal.journal.mealjournal.model to javafx.base;

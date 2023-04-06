@@ -7,17 +7,25 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Meal {
     private final int id;
     private final ReadOnlyStringProperty name;
+    private final LocalDate date;
     private final ReadOnlyListProperty<Ingredient> ingredients;
 
-    public Meal(int id, String name, List<Ingredient> ingredients) {
+    public Meal(int id, String name, LocalDate date, List<Ingredient> ingredients) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
+        this.date = date;
         if (ingredients == null)
             ingredients = new ArrayList<>();
         this.ingredients = new SimpleListProperty<>(FXCollections.observableArrayList(ingredients));
@@ -47,9 +55,14 @@ public class Meal {
         return ingredients;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     @Override
     public String toString() {
         StringBuilder allIngredients = new StringBuilder();
+
         if (ingredients.size() != 0) {
             for (Ingredient ingredient : ingredients) {
                 allIngredients.append(ingredient).append(", ");
@@ -57,8 +70,10 @@ public class Meal {
 
             return "Meal{" +
                     name.get() +
-                    ": " +
-                    allIngredients.substring(0, allIngredients.length() - 2) +
+                    " " +
+                    date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +
+                    ": "
+                    + allIngredients.substring(0, allIngredients.length() - 2) +
                     "}";
         }
         return "Meal{" +

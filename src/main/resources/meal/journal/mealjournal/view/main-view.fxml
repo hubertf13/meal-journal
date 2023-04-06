@@ -47,7 +47,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox minHeight="720.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="meal.journal.mealjournal.controllers.MealController">
+<VBox minHeight="720.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="meal.journal.mealjournal.controllers.MainController">
    <children>
       <BorderPane VBox.vgrow="ALWAYS">
          <center>
@@ -163,7 +163,7 @@
                 <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
                   <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
-                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="450.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="450.0" />
                   <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
               </columnConstraints>
@@ -192,6 +192,11 @@
                         <Insets right="50.0" />
                      </GridPane.margin>
                   </ChoiceBox>
+                  <TextField fx:id="ingredientField" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="200.0" promptText="e.g. chicken 100g" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </TextField>
                </children>
                <padding>
                   <Insets bottom="15.0" top="15.0" />

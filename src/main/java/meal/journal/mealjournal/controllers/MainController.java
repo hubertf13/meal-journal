@@ -4,20 +4,27 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import meal.journal.mealjournal.MealsApplication;
 import meal.journal.mealjournal.dao.IngredientDao;
+import meal.journal.mealjournal.dao.MealDao;
 import meal.journal.mealjournal.model.Ingredient;
+import meal.journal.mealjournal.model.Meal;
 import meal.journal.mealjournal.model.MealName;
+import meal.journal.mealjournal.service.MealService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.util.*;
 
-public class MealController {
+public class MainController {
 
     private final ObservableList<MealName> mealNames = FXCollections.observableArrayList(Arrays.stream(MealName.values()).toList());
     private LocalDate today;
+    private MealService mealService;
 
     @FXML
     private Button addButton;
@@ -61,7 +68,11 @@ public class MealController {
     @FXML
     private TableView<Ingredient> snackTable;
 
+    @FXML
+    private TextField ingredientField;
+
     public void initialize() {
+        mealService = new MealService();
         today = LocalDate.now();
         datePicker.setValue(today);
         choiceBox.setItems(mealNames);
@@ -78,7 +89,7 @@ public class MealController {
         fat.setCellValueFactory(new PropertyValueFactory<>("fat"));
         carbohydrate.setCellValueFactory(new PropertyValueFactory<>("carbohydrate"));
         protein.setCellValueFactory(new PropertyValueFactory<>("protein"));
-        amount.setCellValueFactory(new PropertyValueFactory<>("amountG"));
+        amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         ObservableList<Ingredient> list = IngredientDao.getIngredients();
 
@@ -94,7 +105,22 @@ public class MealController {
 
     @FXML
     void addMeal(ActionEvent event) {
-        System.out.println(choiceBox.getValue());
+        String ingredientName = ingredientField.getText();
+        MealName mealName = choiceBox.getValue();
+        LocalDate date = datePicker.getValue();
+
+        Ingredient ingredient = mealService.getIngredient(ingredientName, mealName.getMealName(), date);
+
+        Optional<Meal> meal = MealDao.getMeal(ingredient.getMealId());
+        if (meal.isPresent()) {
+            for (Node centerGridPaneNode : MealsApplication.centerGridPaneNodes) {
+                if (centerGridPaneNode instanceof TableView<?> tableView) {
+//                    ObservableList<Ingredient> obsList = (ObservableList<Ingredient>) tableView.getItems();
+//                    obsList.removeAll(obsList);
+//                    obsList.addAll(In)
+                }
+            }
+        }
     }
 
     @FXML

@@ -18,7 +18,7 @@ public class IngredientDao {
     private static final String fatColumn = "fat";
     private static final String carbohydrateColumn = "carbohydrate";
     private static final String proteinColumn = "protein";
-    private static final String amountGColumn = "amount_g";
+    private static final String amountColumn = "amount";
     private static final String mealId = "meal_id";
 
     private static final ObservableList<Ingredient> ingredients;
@@ -50,7 +50,7 @@ public class IngredientDao {
                             rs.getString(fatColumn),
                             rs.getString(carbohydrateColumn),
                             rs.getString(proteinColumn),
-                            rs.getString(amountGColumn),
+                            rs.getString(amountColumn),
                             rs.getInt(mealId)));
                 }
             }
@@ -66,9 +66,9 @@ public class IngredientDao {
         //udpate database
         long rows = CRUDHelper.update(
                 tableName,
-                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountGColumn, mealId},
-                new Object[]{newIngredient.getName(), newIngredient.getCalories(), newIngredient.getFat(), newIngredient.getCarbohydrate(), newIngredient.getProtein(), newIngredient.getAmountG(), newIngredient.getMealId()},
-                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.INTEGER},
+                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountColumn, mealId},
+                new Object[]{newIngredient.getName(), newIngredient.getCalories(), newIngredient.getFat(), newIngredient.getCarbohydrate(), newIngredient.getProtein(), newIngredient.getAmount(), newIngredient.getMealId()},
+                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.INTEGER},
                 idColumn,
                 Types.INTEGER,
                 newIngredient.getId()
@@ -87,16 +87,19 @@ public class IngredientDao {
         });
     }
 
-    public static void insertIngredient(String name, String calories, String fat, String carbohydrate, String protein, String amountG, int inMealId) {
+    public static Ingredient insertIngredient(String name, String calories, String fat, String carbohydrate, String protein, String amount, int inMealId) {
         //update database
         int id = (int) CRUDHelper.create(
                 tableName,
-                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountGColumn, mealId},
-                new Object[]{name, calories, fat, carbohydrate, protein, amountG, inMealId},
-                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.INTEGER});
+                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountColumn, mealId},
+                new Object[]{name, calories, fat, carbohydrate, protein, amount, inMealId},
+                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.INTEGER});
 
         //update cache
-        ingredients.add(new Ingredient(id, name, calories, fat, carbohydrate, protein, amountG, inMealId));
+        Ingredient ingredient = new Ingredient(id, name, calories, fat, carbohydrate, protein, amount, inMealId);
+        ingredients.add(ingredient);
+
+        return ingredient;
     }
 
     public static void delete(int id) {

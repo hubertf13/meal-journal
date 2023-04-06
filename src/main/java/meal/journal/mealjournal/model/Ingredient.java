@@ -10,17 +10,17 @@ public class Ingredient {
     private final ReadOnlyStringProperty fat;
     private final ReadOnlyStringProperty carbohydrate;
     private final ReadOnlyStringProperty protein;
-    private final ReadOnlyStringProperty amountG;
+    private final ReadOnlyStringProperty amount;
     private final int mealId;
 
-    public Ingredient(int id, String name, String calories, String fat, String carbohydrate, String protein, String amountG, int mealId) {
+    public Ingredient(int id, String name, String calories, String fat, String carbohydrate, String protein, String amount, int mealId) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
         this.calories = new SimpleStringProperty(calories);
         this.fat = new SimpleStringProperty(fat);
         this.carbohydrate = new SimpleStringProperty(carbohydrate);
         this.protein = new SimpleStringProperty(protein);
-        this.amountG = new SimpleStringProperty(amountG);
+        this.amount = new SimpleStringProperty(amount);
         this.mealId = mealId;
     }
 
@@ -68,12 +68,12 @@ public class Ingredient {
         return protein;
     }
 
-    public String getAmountG() {
-        return amountG.get();
+    public String getAmount() {
+        return amount.get();
     }
 
-    public ReadOnlyStringProperty amountGProperty() {
-        return amountG;
+    public ReadOnlyStringProperty amountProperty() {
+        return amount;
     }
 
     public int getMealId() {
@@ -88,7 +88,7 @@ public class Ingredient {
                 ", fat=" + fat.get() +
                 ", carbohydrate=" + carbohydrate.get() +
                 ", protein=" + protein.get() +
-                ", amountG=" + amountG.get() +
+                ", amount=" + amount.get() +
                 "g}";
     }
 }
