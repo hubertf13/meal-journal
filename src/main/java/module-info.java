@@ -8,6 +8,7 @@ module meal.journal.mealjournal {
     requires org.xerial.sqlitejdbc;
 
     opens meal.journal.mealjournal to javafx.fxml;
+    opens meal.journal.mealjournal.model to javafx.base;
     exports meal.journal.mealjournal;
     exports meal.journal.mealjournal.controllers;
     opens meal.journal.mealjournal.controllers to javafx.fxml;

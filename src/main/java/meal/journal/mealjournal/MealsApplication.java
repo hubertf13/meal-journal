@@ -16,7 +16,7 @@ public class MealsApplication extends Application {
     public void start(Stage stage) throws IOException {
         if (Database.isOK()) {
             FXMLLoader fxmlLoader = new FXMLLoader(MealsApplication.class.getResource("view/main-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 900, 600);
+            Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
             stage.setTitle("Meal Journal");
             stage.setScene(scene);
             stage.show();
