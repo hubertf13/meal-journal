@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class MainController {
 
@@ -78,12 +77,14 @@ public class MainController {
         choiceBox.setItems(mealNames);
         choiceBox.setValue(mealNames.stream().findFirst().orElse(MealName.BREAKFAST));
 
-        addColumnsToTables();
+        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+        calculateNutrients(tablesIngredients);
     }
 
-    private void addColumnsToTables() {
+    private ArrayList<Ingredient> addColumnsToTables() {
         List<Ingredient> ingredients = IngredientDao.getIngredients().stream().toList();
         List<Meal> meals = MealDao.getMeals().stream().toList();
+        ArrayList<Ingredient> test = new ArrayList<>();
 
         for (Meal meal : meals) {
             if (meal.getDate().isEqual(datePicker.getValue())) {
@@ -97,8 +98,10 @@ public class MainController {
                     case "Snack" -> addColumns(validIngr, snackTable);
                     case "Dinner" -> addColumns(validIngr, dinnerTable);
                 }
+                test.addAll(validIngr);
             }
         }
+        return test;
     }
 
     private void addColumns(ObservableList<Ingredient> validIngr, TableView<Ingredient> table) {
@@ -128,7 +131,7 @@ public class MainController {
         table.setItems(validIngr);
     }
 
-    private static void setColumnsWidth(TableView<Ingredient> table, TableColumn<Ingredient, String> name, TableColumn<Ingredient, BigDecimal> calories, TableColumn<Ingredient, BigDecimal> fat, TableColumn<Ingredient, BigDecimal> carbohydrate, TableColumn<Ingredient, BigDecimal> protein, TableColumn<Ingredient, BigDecimal> amount) {
+    private void setColumnsWidth(TableView<Ingredient> table, TableColumn<Ingredient, String> name, TableColumn<Ingredient, BigDecimal> calories, TableColumn<Ingredient, BigDecimal> fat, TableColumn<Ingredient, BigDecimal> carbohydrate, TableColumn<Ingredient, BigDecimal> protein, TableColumn<Ingredient, BigDecimal> amount) {
         name.prefWidthProperty().bind(table.widthProperty().multiply(0.18));
         calories.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
         fat.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
@@ -143,18 +146,70 @@ public class MainController {
         amount.setResizable(false);
     }
 
+    private void calculateNutrients(ArrayList<Ingredient> tablesIngredients) {
+        double totalCalories = Math.round(calculateTotalCalories(tablesIngredients) * 100.0) / 100.0;
+        double totalProteins = Math.round(calculateTotalProteins(tablesIngredients) * 100.0) / 100.0;
+        double totalFat = Math.round(calculateTotalFat(tablesIngredients) * 100.0) / 100.0;
+        double totalCarbohydrates = Math.round(calculateTotalCarbohydrates(tablesIngredients) * 100.0) / 100.0;
+
+        kcalField.setText(String.valueOf(totalCalories));
+        porteinsField.setText(String.valueOf(totalProteins));
+        fatsField.setText(String.valueOf(totalFat));
+        carbsField.setText(String.valueOf(totalCarbohydrates));
+    }
+
+    private double calculateTotalCalories(ArrayList<Ingredient> tablesIngredients) {
+        double calories = 0.0;
+        for (Ingredient tablesIngredient : tablesIngredients) {
+            calories += Double.parseDouble(tablesIngredient.getCalories());
+        }
+
+        return calories;
+    }
+
+    private double calculateTotalProteins(ArrayList<Ingredient> tablesIngredients) {
+        double proteins = 0.0;
+        for (Ingredient tablesIngredient : tablesIngredients) {
+            proteins += Double.parseDouble(tablesIngredient.getProtein());
+        }
+
+        return proteins;
+    }
+
+    private double calculateTotalCarbohydrates(ArrayList<Ingredient> tablesIngredients) {
+        double carbohydrate = 0.0;
+        for (Ingredient tablesIngredient : tablesIngredients) {
+            carbohydrate += Double.parseDouble(tablesIngredient.getCarbohydrate());
+        }
+
+        return carbohydrate;
+    }
+
+    private double calculateTotalFat(ArrayList<Ingredient> tablesIngredients) {
+        double fat = 0.0;
+        for (Ingredient tablesIngredient : tablesIngredients) {
+            fat += Double.parseDouble(tablesIngredient.getFat());
+        }
+
+        return fat;
+    }
+
+    @FXML
+    public void onEnter(ActionEvent ae) {
+        addMeal(ae);
+    }
+
     @FXML
     void addMeal(ActionEvent event) {
         String ingredientName = ingredientField.getText();
         MealName mealName = choiceBox.getValue();
         LocalDate date = datePicker.getValue();
 
-        Ingredient ingredient = mealService.getIngredient(ingredientName, mealName.getMealName(), date);
+        mealService.getIngredient(ingredientName, mealName.getMealName(), date);
 
-        Optional<Meal> meal = MealDao.getMeal(ingredient.getMealId());
-        if (meal.isPresent()) {
-
-        }
+        clearTables();
+        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+        calculateNutrients(tablesIngredients);
     }
 
     @FXML
@@ -162,7 +217,8 @@ public class MainController {
         today = datePicker.getValue();
 
         clearTables();
-        addColumnsToTables();
+        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+        calculateNutrients(tablesIngredients);
     }
 
     @FXML
@@ -171,7 +227,8 @@ public class MainController {
         datePicker.setValue(today);
 
         clearTables();
-        addColumnsToTables();
+        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+        calculateNutrients(tablesIngredients);
     }
 
     @FXML
@@ -180,7 +237,8 @@ public class MainController {
         datePicker.setValue(today);
 
         clearTables();
-        addColumnsToTables();
+        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+        calculateNutrients(tablesIngredients);
     }
 
     private void clearTables() {

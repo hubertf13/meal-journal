@@ -192,7 +192,7 @@
                         <Insets right="50.0" />
                      </GridPane.margin>
                   </ChoiceBox>
-                  <TextField fx:id="ingredientField" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="200.0" promptText="e.g. chicken 100g" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                  <TextField fx:id="ingredientField" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="200.0" onAction="#onEnter" promptText="e.g. chicken 100g" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>

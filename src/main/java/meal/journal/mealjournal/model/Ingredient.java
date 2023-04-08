@@ -89,6 +89,6 @@ public class Ingredient {
                 ", carbohydrate=" + carbohydrate.get() +
                 ", protein=" + protein.get() +
                 ", amount=" + amount.get() +
-                "g}";
+                "}";
     }
 }
