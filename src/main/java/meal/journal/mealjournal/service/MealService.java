@@ -18,18 +18,18 @@ public class MealService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Ingredient getIngredient(String rawIngredient, String mealName, LocalDate date) {
-        try {
-            URL url = buildUrl(rawIngredient);
-            JsonNode jsonNode = objectMapper.readTree(url);
+    public Ingredient getIngredient(String rawIngredient, String mealName, LocalDate date) throws IOException {
+        URL url = buildUrl(rawIngredient);
+        JsonNode jsonNode = objectMapper.readTree(url);
 
+        JsonNode totalNutrientsNode = jsonNode.get("totalNutrients");
+        if (totalNutrientsNode.size() != 0) {
             Optional<Meal> optionalMeal = MealDao.getMeal(mealName, date);
             Meal meal = optionalMeal.isEmpty() ? MealDao.insertMeal(mealName, date) : optionalMeal.get();
 
             return createIngredient(jsonNode, meal);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } else {
+            throw new IOException();
         }
     }
 

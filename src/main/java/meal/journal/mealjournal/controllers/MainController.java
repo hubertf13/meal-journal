@@ -2,7 +2,6 @@ package meal.journal.mealjournal.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,6 +12,7 @@ import meal.journal.mealjournal.model.Meal;
 import meal.journal.mealjournal.model.MealName;
 import meal.journal.mealjournal.service.MealService;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,9 +24,6 @@ public class MainController {
     private final ObservableList<MealName> mealNames = FXCollections.observableArrayList(Arrays.stream(MealName.values()).toList());
     private LocalDate today;
     private MealService mealService;
-
-    @FXML
-    private Button addButton;
 
     @FXML
     private TableView<Ingredient> breakfastTable;
@@ -56,13 +53,7 @@ public class MainController {
     private TableView<Ingredient> lunchTable;
 
     @FXML
-    private Button nextButton;
-
-    @FXML
     private TextField porteinsField;
-
-    @FXML
-    private Button prevButton;
 
     @FXML
     private TableView<Ingredient> snackTable;
@@ -84,7 +75,7 @@ public class MainController {
     private ArrayList<Ingredient> addColumnsToTables() {
         List<Ingredient> ingredients = IngredientDao.getIngredients().stream().toList();
         List<Meal> meals = MealDao.getMeals().stream().toList();
-        ArrayList<Ingredient> test = new ArrayList<>();
+        ArrayList<Ingredient> addedIngredients = new ArrayList<>();
 
         for (Meal meal : meals) {
             if (meal.getDate().isEqual(datePicker.getValue())) {
@@ -98,10 +89,10 @@ public class MainController {
                     case "Snack" -> addColumns(validIngr, snackTable);
                     case "Dinner" -> addColumns(validIngr, dinnerTable);
                 }
-                test.addAll(validIngr);
+                addedIngredients.addAll(validIngr);
             }
         }
-        return test;
+        return addedIngredients;
     }
 
     private void addColumns(ObservableList<Ingredient> validIngr, TableView<Ingredient> table) {
@@ -138,6 +129,7 @@ public class MainController {
         carbohydrate.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
         protein.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
         amount.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
+
         name.setResizable(false);
         calories.setResizable(false);
         fat.setResizable(false);
@@ -195,50 +187,55 @@ public class MainController {
     }
 
     @FXML
-    public void onEnter(ActionEvent ae) {
-        addMeal(ae);
+    public void onEnter() {
+        addMeal();
     }
 
     @FXML
-    void addMeal(ActionEvent event) {
+    void addMeal() {
         String ingredientName = ingredientField.getText();
         MealName mealName = choiceBox.getValue();
         LocalDate date = datePicker.getValue();
 
-        mealService.getIngredient(ingredientName, mealName.getMealName(), date);
+        try {
+            mealService.getIngredient(ingredientName, mealName.getMealName(), date);
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("You cannot add this ingredient");
+            alert.showAndWait();
+        }
 
-        clearTables();
-        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
-        calculateNutrients(tablesIngredients);
+        updateWindow();
     }
 
     @FXML
-    void dateChange(ActionEvent event) {
+    void dateChange() {
         today = datePicker.getValue();
 
-        clearTables();
-        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
-        calculateNutrients(tablesIngredients);
+        updateWindow();
     }
 
     @FXML
-    void nextDay(ActionEvent event) {
+    void nextDay() {
         today = today.plusDays(1);
         datePicker.setValue(today);
 
+        updateWindow();
+    }
+
+    private void updateWindow() {
         clearTables();
         ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
         calculateNutrients(tablesIngredients);
     }
 
     @FXML
-    void prevDay(ActionEvent event) {
+    void prevDay() {
         today = today.minusDays(1);
         datePicker.setValue(today);
 
-        clearTables();
-        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
-        calculateNutrients(tablesIngredients);
+        updateWindow();
     }
 
     private void clearTables() {
@@ -247,5 +244,43 @@ public class MainController {
         lunchTable.getColumns().clear();
         snackTable.getColumns().clear();
         dinnerTable.getColumns().clear();
+    }
+
+    @FXML
+    void onBreakfastDelete() {
+        onDelete(breakfastTable);
+    }
+
+    @FXML
+    void onIIBreakfastDelete() {
+        onDelete(iibreakfastTable);
+    }
+
+    @FXML
+    void onLunchDelete() {
+        onDelete(lunchTable);
+    }
+
+    @FXML
+    void onSnackDelete() {
+        onDelete(snackTable);
+    }
+
+    @FXML
+    void onDinnerDelete() {
+        onDelete(dinnerTable);
+    }
+
+    private void onDelete(TableView<Ingredient> tableView) {
+        Ingredient selectedItem = tableView.getSelectionModel().getSelectedItem();
+        IngredientDao.delete(selectedItem.getId());
+
+        for (Meal meal : MealDao.getMeals().stream().toList()) {
+            if (meal.getIngredients().stream().toList().size() == 0) {
+                MealDao.delete(meal.getId());
+            }
+        }
+
+        updateWindow();
     }
 }
