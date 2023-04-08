@@ -1,15 +1,18 @@
 package meal.journal.mealjournal.dao;
 
+import meal.journal.mealjournal.MealsApplication;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Database {
-    private final static String DATABASE_LOCATION = "C:\\Users\\huber\\IdeaProjects\\MealJournal\\src\\main\\resources\\meal\\journal\\mealjournal\\database\\database";
+    private static String DATABASE_LOCATION;
     private static final String requiredTable = "meal";
 
     public static boolean isOK() {
+        DATABASE_LOCATION = MealsApplication.getDatabaseLocation();
         if (!checkDrivers())
             return false; //driver errors
 

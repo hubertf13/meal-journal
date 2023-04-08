@@ -35,7 +35,7 @@ public class MealService {
 
     private Ingredient createIngredient(JsonNode jsonNode, Meal meal) {
 
-        String ingrName = jsonNode.get("ingredients").get(0).get("parsed").get(0).get("food").asText();
+        String ingrName = jsonNode.get("ingredients").get(0).get("parsed").get(0).get("food").asText().toLowerCase();
         String ingrCalories = String.valueOf(Math.round(jsonNode.get("calories").asDouble() * 100.0) / 100.0);
         String ingrFat = String.valueOf(Math.round(
                 jsonNode.get("totalNutrients").get("FAT").get("quantity").asDouble() * 100.0) / 100.0);
@@ -53,10 +53,10 @@ public class MealService {
     private URL buildUrl(String rawIngredient) throws MalformedURLException {
         String convertedIngredient = rawIngredient.replaceAll(" ", "%20");
 
-        String requestUrl = MealsApplication.mainApiUrl + "?" +
-                "app_id=" + MealsApplication.apiAppId +
+        String requestUrl = MealsApplication.getMainApiUrl() + "?" +
+                "app_id=" + MealsApplication.getApiAppId() +
                 "&" +
-                "app_key=" + MealsApplication.apiAppKey +
+                "app_key=" + MealsApplication.getApiAppKey() +
                 "&" +
                 "ingr=" + convertedIngredient;
 
