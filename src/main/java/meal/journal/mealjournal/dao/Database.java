@@ -37,6 +37,40 @@ public class Database {
             Logger.getAnonymousLogger().log(Level.SEVERE, LocalDateTime.now() + ": Could not find tables in database");
             return false;
         }
+
+        String createTableMealStmt = "CREATE TABLE IF NOT EXISTS meal\n" +
+                "(\n" +
+                "    id   INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "    name VARCHAR(255) NOT NULL,\n" +
+                "    date NUMERIC NOT NULL\n" +
+                ");";
+        String createTableIngredientStmt = "CREATE TABLE IF NOT EXISTS ingredient\n" +
+                "(\n" +
+                "    id           INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "    name         VARCHAR(255) NOT NULL,\n" +
+                "    calories     NUMERIC      NOT NULL,\n" +
+                "    fat          NUMERIC      NOT NULL,\n" +
+                "    carbohydrate NUMERIC      NOT NULL,\n" +
+                "    protein      NUMERIC      NOT NULL,\n" +
+                "    amount       VARCHAR(255) NOT NULL,\n" +
+                "    meal_id      INTEGER      NOT NULL,\n" +
+                "    FOREIGN KEY (meal_id) REFERENCES meal (id)\n" +
+                ");";
+
+        try (Connection connection = Database.connect()) {
+            if (connection != null) {
+                Statement stmt = connection.createStatement();
+                // create a new table
+                stmt.execute(createTableMealStmt);
+                stmt.execute(createTableIngredientStmt);
+
+                return true;
+            }
+        } catch (SQLException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, LocalDateTime.now() + ": Could not create tables in database");
+            return false;
+        }
+
         return false;
     }
 

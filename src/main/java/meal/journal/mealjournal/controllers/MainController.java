@@ -275,12 +275,6 @@ public class MainController {
         Ingredient selectedItem = tableView.getSelectionModel().getSelectedItem();
         IngredientDao.delete(selectedItem.getId());
 
-        for (Meal meal : MealDao.getMeals().stream().toList()) {
-            if (meal.getIngredients().stream().toList().size() == 0) {
-                MealDao.delete(meal.getId());
-            }
-        }
-
         updateWindow();
     }
 }
