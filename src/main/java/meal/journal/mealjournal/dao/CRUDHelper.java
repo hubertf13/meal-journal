@@ -1,13 +1,14 @@
 package meal.journal.mealjournal.dao;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CRUDHelper {
+    private static Log log = LogFactory.getLog(CRUDHelper.class);
 
     public static Object read(String tableName, String fieldName, int fieldDataType,
                               String indexFieldName, int indexDataType, Object index) {
@@ -38,10 +39,8 @@ public class CRUDHelper {
                 throw new SQLException("Connection is null");
             }
         } catch (SQLException exception) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE,
-                    LocalDateTime.now() + ": Could not fetch from " + tableName + " by index " + index +
-                            " and column " + fieldName);
+            log.error(": Could not fetch from " + tableName + " by index " + index +
+                    " and column " + fieldName);
             return null;
         }
     }
@@ -71,10 +70,8 @@ public class CRUDHelper {
                 throw new SQLException("Connection is null");
             }
 
-        } catch (SQLException ex) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE,
-                    LocalDateTime.now() + ": Could not add to database");
+        } catch (SQLException e) {
+            log.error("Could not add to database: " + e.getMessage());
             return -1;
         }
     }
@@ -125,11 +122,11 @@ public class CRUDHelper {
                         }
                     }
                 }
+            } else {
+                throw new SQLException("Connection is null");
             }
-        } catch (SQLException ex) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE,
-                    LocalDateTime.now() + ": Could not add to database");
+        } catch (SQLException e) {
+            log.error("Could not add to database: " + e.getMessage());
             return -1;
         }
         return -1;
@@ -148,10 +145,7 @@ public class CRUDHelper {
                 throw new SQLException("Connection is null");
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE,
-                    LocalDateTime.now() + ": Could not delete from " + tableName + " by id " + id +
-                            " because " + e.getCause());
+            log.error("Could not delete from " + tableName + " by id " + id + " because " + e.getCause());
             return -1;
         }
     }

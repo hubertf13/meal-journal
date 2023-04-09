@@ -4,21 +4,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import meal.journal.mealjournal.model.Ingredient;
 import meal.journal.mealjournal.model.Meal;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MealDao {
+    private static Log log = LogFactory.getLog(MealDao.class);
     private static final String tableName = "meal";
     private static final String idColumn = "id";
     private static final String nameColumn = "name";
@@ -55,11 +55,12 @@ public class MealDao {
 
                     meals.add(new Meal(mealId, rs.getString(nameColumn), date, mealIngredients));
                 }
+                log.info("Update meals from database completed");
+            } else {
+                throw new SQLException("Connection in is null");
             }
         } catch (SQLException | ParseException e) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE,
-                    LocalDateTime.now() + ": Could not load Meal from database ");
+            log.error("Could not load Meal from database: " + e.getMessage());
             meals.clear();
         }
     }

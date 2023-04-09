@@ -8,6 +8,7 @@ module meal.journal.mealjournal {
     requires org.xerial.sqlitejdbc;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires commons.logging;
 
     opens meal.journal.mealjournal to javafx.fxml;
     opens meal.journal.mealjournal.model to javafx.base;

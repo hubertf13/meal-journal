@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import meal.journal.mealjournal.dao.Database;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class MealsApplication extends Application {
+    private static Log log = LogFactory.getLog(MealsApplication.class);
     private final static String DATABASE_LOCATION_PROP = "database_location";
     private final static String MAIN_API_URL_PROP = "api_url";
     private final static String API_APP_ID_PROP = "app_id";
@@ -65,7 +68,7 @@ public class MealsApplication extends Application {
         ) {
             p.load(fileReader);
         } catch (IOException e) {
-            System.out.println("ERROR - default properties will be read");
+            log.error("Default properties will be read");
         }
         return p;
     }

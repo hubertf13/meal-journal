@@ -13,8 +13,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class MealService {
+    private static Log log = LogFactory.getLog(MealService.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -29,6 +32,7 @@ public class MealService {
 
             return createIngredient(jsonNode, meal);
         } else {
+            log.error("Something went wrong with getting json");
             throw new IOException();
         }
     }
@@ -46,6 +50,8 @@ public class MealService {
         String ingrAmount = jsonNode.get("ingredients").get(0).get("parsed").get(0).get("quantity").asText() +
                 jsonNode.get("ingredients").get(0).get("parsed").get(0).get("measure").asText();
 
+        log.info("Inserting ingredient to database...");
+
         return IngredientDao.insertIngredient(ingrName, ingrCalories, ingrFat,
                 ingrCarbohydrate, ingrProtein, ingrAmount, meal.getId());
     }
@@ -59,6 +65,8 @@ public class MealService {
                 "app_key=" + MealsApplication.getApiAppKey() +
                 "&" +
                 "ingr=" + convertedIngredient;
+
+        log.info("Request URL to API: " + requestUrl);
 
         return new URL(requestUrl);
     }

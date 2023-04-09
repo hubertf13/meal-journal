@@ -3,14 +3,14 @@ package meal.journal.mealjournal.dao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import meal.journal.mealjournal.model.Ingredient;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class IngredientDao {
+    private static Log log = LogFactory.getLog(IngredientDao.class);
     private static final String tableName = "ingredient";
     private static final String idColumn = "id";
     private static final String nameColumn = "name";
@@ -53,11 +53,12 @@ public class IngredientDao {
                             rs.getString(amountColumn),
                             rs.getInt(mealId)));
                 }
+                log.info("Update ingredients from database completed");
+            } else {
+                throw new SQLException("Connection is null");
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE,
-                    LocalDateTime.now() + ": Could not load Ingredient from database ");
+            log.error("Could not load Ingredient from database: " + e.getMessage());
             ingredients.clear();
         }
     }

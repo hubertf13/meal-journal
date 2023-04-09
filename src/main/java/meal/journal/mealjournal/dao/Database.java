@@ -1,13 +1,13 @@
 package meal.journal.mealjournal.dao;
 
 import meal.journal.mealjournal.MealsApplication;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Database {
+    private static Log log = LogFactory.getLog(Database.class);
     private static String DATABASE_LOCATION;
     private static final String requiredTable = "meal";
 
@@ -35,9 +35,11 @@ public class Database {
                     if (rs.getString("tbl_name").equals(requiredTable))
                         return true;
                 }
+            } else {
+                throw new SQLException("Connection is null");
             }
-        } catch (SQLException exception) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, LocalDateTime.now() + ": Could not find tables in database");
+        } catch (SQLException e) {
+            log.error("Could not find tables in database: " + e.getMessage());
             return false;
         }
 
@@ -68,20 +70,20 @@ public class Database {
                 stmt.execute(createTableIngredientStmt);
 
                 return true;
+            } else {
+                throw new SQLException("Connection is null");
             }
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, LocalDateTime.now() + ": Could not create tables in database");
+            log.error("Could not create tables in database: " + e.getMessage());
             return false;
         }
-
-        return false;
     }
 
     private static boolean checkConnection() {
         try (Connection connection = connect()) {
             return connection != null;
         } catch (SQLException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, LocalDateTime.now() + ": Could not connect to database");
+            log.error("Could not connect to database: " + e.getMessage());
             return false;
         }
     }
@@ -91,8 +93,8 @@ public class Database {
             Class.forName("org.sqlite.JDBC");
             DriverManager.registerDriver(new org.sqlite.JDBC());
             return true;
-        } catch (ClassNotFoundException | SQLException classNotFoundException) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, LocalDateTime.now() + ": Could not start SQLite Drivers");
+        } catch (ClassNotFoundException | SQLException e) {
+            log.error("Could not start SQLite Drivers: " + e.getMessage());
             return false;
         }
     }
@@ -104,8 +106,7 @@ public class Database {
         try {
             connection = DriverManager.getConnection(dbPrefix + DATABASE_LOCATION);
         } catch (SQLException exception) {
-            Logger.getAnonymousLogger().log(
-                    Level.SEVERE, LocalDateTime.now() + ": Could not connect to SQLite DB at " + DATABASE_LOCATION);
+            log.error("Could not connect to SQLite DB at " + DATABASE_LOCATION);
             return null;
         }
         return connection;
