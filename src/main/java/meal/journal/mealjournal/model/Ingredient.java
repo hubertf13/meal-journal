@@ -2,6 +2,10 @@ package meal.journal.mealjournal.model;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.File;
 
 public class Ingredient {
     private final int id;
@@ -12,8 +16,9 @@ public class Ingredient {
     private final ReadOnlyStringProperty protein;
     private final ReadOnlyStringProperty amount;
     private final int mealId;
+    private final ImageView image;
 
-    public Ingredient(int id, String name, String calories, String fat, String carbohydrate, String protein, String amount, int mealId) {
+    public Ingredient(int id, String name, String calories, String fat, String carbohydrate, String protein, String amount, int mealId, String image) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
         this.calories = new SimpleStringProperty(calories);
@@ -22,6 +27,13 @@ public class Ingredient {
         this.protein = new SimpleStringProperty(protein);
         this.amount = new SimpleStringProperty(amount);
         this.mealId = mealId;
+        File file = new File("src/main/resources/meal/journal/mealjournal/images/" + image);
+        if (file.exists()) {
+            String absolutePath = file.getAbsolutePath();
+            this.image = new ImageView(new Image(absolutePath, 50.0, 50.0, true, true));
+        } else {
+            this.image = new ImageView();
+        }
     }
 
     public int getId() {
@@ -78,6 +90,10 @@ public class Ingredient {
 
     public int getMealId() {
         return mealId;
+    }
+
+    public ImageView getImage() {
+        return image;
     }
 
     @Override

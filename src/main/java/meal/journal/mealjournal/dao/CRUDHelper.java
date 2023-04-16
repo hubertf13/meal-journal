@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class CRUDHelper {
-    private static Log log = LogFactory.getLog(CRUDHelper.class);
+    private static final Log log = LogFactory.getLog(CRUDHelper.class);
 
     public static Object read(String tableName, String fieldName, int fieldDataType,
                               String indexFieldName, int indexDataType, Object index) {

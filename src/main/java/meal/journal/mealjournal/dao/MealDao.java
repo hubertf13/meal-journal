@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MealDao {
-    private static Log log = LogFactory.getLog(MealDao.class);
+    private static final Log log = LogFactory.getLog(MealDao.class);
     private static final String tableName = "meal";
     private static final String idColumn = "id";
     private static final String nameColumn = "name";

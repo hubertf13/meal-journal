@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import java.sql.*;
 
 public class Database {
-    private static Log log = LogFactory.getLog(Database.class);
+    private static final Log log = LogFactory.getLog(Database.class);
     private static String DATABASE_LOCATION;
     private static final String requiredTable = "meal";
 

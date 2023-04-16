@@ -9,6 +9,7 @@ module meal.journal.mealjournal {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires commons.logging;
+    requires org.apache.commons.io;
 
     opens meal.journal.mealjournal to javafx.fxml;
     opens meal.journal.mealjournal.model to javafx.base;

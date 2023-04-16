@@ -18,14 +18,16 @@ import java.util.Properties;
 public class MealsApplication extends Application {
     private static Log log = LogFactory.getLog(MealsApplication.class);
     private final static String DATABASE_LOCATION_PROP = "database_location";
-    private final static String MAIN_API_URL_PROP = "api_url";
-    private final static String API_APP_ID_PROP = "app_id";
-    private final static String API_APP_KEY_PROP = "app_key";
+    private final static String MAIN_API_URL_PROP = "edamam_api_url";
+    private final static String FOOD_API_URL_PROP = "edamam_food_api_url";
+    private final static String API_APP_ID_PROP = "edamam_app_id";
+    private final static String API_APP_KEY_PROP = "edamam_app_key";
 
     private final static String SCREEN_WIDTH_PROP = "screen_width";
     private final static String SCREEN_HEIGHT_PROP = "screen_height";
     private static String databaseLocation;
     private static String mainApiUrl;
+    private static String foodApiUrl;
     private static String apiAppId;
     private static String apiAppKey;
     private static String screenWidth;
@@ -58,6 +60,7 @@ public class MealsApplication extends Application {
         apiAppKey = p.getProperty(API_APP_KEY_PROP, "a6fff2053066b3ffe0ae193e69c4a6cc");
         screenWidth = p.getProperty(SCREEN_WIDTH_PROP, "1280");
         screenHeight = p.getProperty(SCREEN_HEIGHT_PROP, "720");
+        foodApiUrl = p.getProperty(FOOD_API_URL_PROP, "https://api.edamam.com/api/food-database/v2/parser");
     }
 
     private Properties loadProperties() {
@@ -87,6 +90,10 @@ public class MealsApplication extends Application {
 
     public static String getApiAppKey() {
         return apiAppKey;
+    }
+
+    public static String getFoodApiUrl() {
+        return foodApiUrl;
     }
 
     public static void main(String[] args) {

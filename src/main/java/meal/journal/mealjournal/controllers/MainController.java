@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import meal.journal.mealjournal.dao.IngredientDao;
 import meal.journal.mealjournal.dao.MealDao;
 import meal.journal.mealjournal.model.Ingredient;
@@ -61,12 +62,17 @@ public class MainController {
     @FXML
     private TextField ingredientField;
 
+    @FXML
+    private Label timeLabel;
+    private volatile boolean stop = false;
+
     public void initialize() {
         mealService = new MealService();
         today = LocalDate.now();
         datePicker.setValue(today);
         choiceBox.setItems(mealNames);
         choiceBox.setValue(mealNames.stream().findFirst().orElse(MealName.BREAKFAST));
+
 
         ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
         calculateNutrients(tablesIngredients);
@@ -96,6 +102,7 @@ public class MainController {
     }
 
     private void addColumns(ObservableList<Ingredient> validIngr, TableView<Ingredient> table) {
+        TableColumn<Ingredient, ImageView> image = new TableColumn<>("Image");
         TableColumn<Ingredient, String> name = new TableColumn<>("Ingredient");
         TableColumn<Ingredient, BigDecimal> calories = new TableColumn<>("Calories");
         TableColumn<Ingredient, BigDecimal> fat = new TableColumn<>("Fats");
@@ -103,8 +110,9 @@ public class MainController {
         TableColumn<Ingredient, BigDecimal> protein = new TableColumn<>("Protein");
         TableColumn<Ingredient, BigDecimal> amount = new TableColumn<>("Amount");
 
-        setColumnsWidth(table, name, calories, fat, carbohydrate, protein, amount);
+        setColumnsWidth(table, image, name, calories, fat, carbohydrate, protein, amount);
 
+        image.setCellValueFactory(new PropertyValueFactory<>("image"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         calories.setCellValueFactory(new PropertyValueFactory<>("calories"));
         fat.setCellValueFactory(new PropertyValueFactory<>("fat"));
@@ -112,6 +120,7 @@ public class MainController {
         protein.setCellValueFactory(new PropertyValueFactory<>("protein"));
         amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
+        table.getColumns().add(image);
         table.getColumns().add(name);
         table.getColumns().add(calories);
         table.getColumns().add(fat);
@@ -122,14 +131,16 @@ public class MainController {
         table.setItems(validIngr);
     }
 
-    private void setColumnsWidth(TableView<Ingredient> table, TableColumn<Ingredient, String> name, TableColumn<Ingredient, BigDecimal> calories, TableColumn<Ingredient, BigDecimal> fat, TableColumn<Ingredient, BigDecimal> carbohydrate, TableColumn<Ingredient, BigDecimal> protein, TableColumn<Ingredient, BigDecimal> amount) {
+    private void setColumnsWidth(TableView<Ingredient> table, TableColumn<Ingredient, ImageView> image, TableColumn<Ingredient, String> name, TableColumn<Ingredient, BigDecimal> calories, TableColumn<Ingredient, BigDecimal> fat, TableColumn<Ingredient, BigDecimal> carbohydrate, TableColumn<Ingredient, BigDecimal> protein, TableColumn<Ingredient, BigDecimal> amount) {
+        image.prefWidthProperty().bind(table.widthProperty().multiply(0.04));
         name.prefWidthProperty().bind(table.widthProperty().multiply(0.18));
-        calories.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
-        fat.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
-        carbohydrate.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
-        protein.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
+        calories.prefWidthProperty().bind(table.widthProperty().multiply(0.16));
+        fat.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        carbohydrate.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        protein.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
         amount.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
 
+        image.setResizable(false);
         name.setResizable(false);
         calories.setResizable(false);
         fat.setResizable(false);
@@ -277,4 +288,8 @@ public class MainController {
 
         updateWindow();
     }
+
+//    private void timenow() {
+//        Thread thread = new Thread();
+//    }
 }
