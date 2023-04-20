@@ -12,6 +12,7 @@ import meal.journal.mealjournal.dao.MealDao;
 import meal.journal.mealjournal.model.Ingredient;
 import meal.journal.mealjournal.model.Meal;
 import meal.journal.mealjournal.model.MealName;
+import meal.journal.mealjournal.service.MealProxy;
 import meal.journal.mealjournal.service.MealService;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class MainController {
 
     private final ObservableList<MealName> mealNames = FXCollections.observableArrayList(Arrays.stream(MealName.values()).toList());
     private LocalDate today;
-    private MealService mealService;
+    private MealProxy mealProxy;
 
     @FXML
     private TableView<Ingredient> breakfastTable;
@@ -69,7 +70,9 @@ public class MainController {
     private Label timeLabel;
 
     public void initialize() {
-        mealService = new MealService();
+        MealService mealService = new MealService();
+        mealProxy = new MealProxy(mealService);
+
         today = LocalDate.now();
         datePicker.setValue(today);
         choiceBox.setItems(mealNames);
@@ -211,7 +214,7 @@ public class MainController {
         LocalDate date = datePicker.getValue();
 
         try {
-            mealService.getIngredient(ingredientName, mealName.getMealName(), date);
+            mealProxy.getIngredient(ingredientName, mealName.getMealName(), date);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
