@@ -16,18 +16,19 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.Optional;
+
 public class MealService {
-    private static Log log = LogFactory.getLog(MealService.class);
+    private static final Log log = LogFactory.getLog(MealService.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Ingredient getIngredient(String rawIngredient, String mealName, LocalDate date) throws IOException {
-        String ingredientName = rawIngredient.split(" ")[0];
 
         URL nutrientsUrl = buildUrl(rawIngredient, MealsApplication.getMainApiUrl());
         JsonNode nutrientsJsonNode = objectMapper.readTree(nutrientsUrl);
+
+        String ingredientName = nutrientsJsonNode.get("ingredients").get(0).get("parsed").get(0).get("foodMatch").asText();
         URL foodUrl = buildUrl(ingredientName, MealsApplication.getFoodApiUrl());
         JsonNode foodJsonNode = objectMapper.readTree(foodUrl);
 

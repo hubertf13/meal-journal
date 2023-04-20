@@ -1,5 +1,6 @@
 package meal.journal.mealjournal.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,9 +16,11 @@ import meal.journal.mealjournal.service.MealService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MainController {
@@ -64,7 +67,6 @@ public class MainController {
 
     @FXML
     private Label timeLabel;
-    private volatile boolean stop = false;
 
     public void initialize() {
         mealService = new MealService();
@@ -72,7 +74,7 @@ public class MainController {
         datePicker.setValue(today);
         choiceBox.setItems(mealNames);
         choiceBox.setValue(mealNames.stream().findFirst().orElse(MealName.BREAKFAST));
-
+        timenow();
 
         ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
         calculateNutrients(tablesIngredients);
@@ -238,6 +240,8 @@ public class MainController {
     private void updateWindow() {
         clearTables();
         ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+
+
         calculateNutrients(tablesIngredients);
     }
 
@@ -289,7 +293,20 @@ public class MainController {
         updateWindow();
     }
 
-//    private void timenow() {
-//        Thread thread = new Thread();
-//    }
+    private void timenow() {
+        Thread thread = new Thread(() -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+                final String timenow = sdf.format(new Date());
+                Platform.runLater(() -> timeLabel.setText(timenow));
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
 }

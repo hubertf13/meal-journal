@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class MealsApplication extends Application {
-    private static Log log = LogFactory.getLog(MealsApplication.class);
+    private static final Log log = LogFactory.getLog(MealsApplication.class);
     private final static String DATABASE_LOCATION_PROP = "database_location";
     private final static String MAIN_API_URL_PROP = "edamam_api_url";
     private final static String FOOD_API_URL_PROP = "edamam_food_api_url";
@@ -67,7 +67,7 @@ public class MealsApplication extends Application {
         final Properties p = new Properties();
 
         try (
-                FileReader fileReader = new FileReader("properties/mealJournal.properties")
+                FileReader fileReader = new FileReader("config/mealJournal.properties")
         ) {
             p.load(fileReader);
         } catch (IOException e) {
