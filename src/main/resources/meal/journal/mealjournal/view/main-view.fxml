@@ -39,6 +39,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -200,7 +201,8 @@
                 <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
                   <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
-                  <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="450.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="450.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                   <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
               </columnConstraints>
@@ -219,21 +221,26 @@
                         <Insets left="10.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addMeal" text="Add" GridPane.columnIndex="4" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addMeal" text="Add" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </Button>
-                  <ChoiceBox fx:id="choiceBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                  <ChoiceBox fx:id="choiceBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnIndex="6" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets right="50.0" />
                      </GridPane.margin>
                   </ChoiceBox>
-                  <TextField fx:id="ingredientField" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="200.0" onAction="#onEnter" promptText="e.g. chicken 100g" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                  <TextField fx:id="ingredientField" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="200.0" onAction="#onEnter" promptText="e.g. chicken 100g" GridPane.columnIndex="4" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </TextField>
+                  <ProgressBar fx:id="progressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                     <padding>
+                        <Insets left="100.0" right="100.0" />
+                     </padding>
+                  </ProgressBar>
                </children>
                <padding>
                   <Insets bottom="15.0" top="15.0" />

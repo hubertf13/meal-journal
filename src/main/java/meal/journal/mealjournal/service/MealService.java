@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import meal.journal.mealjournal.MealsApplication;
 import meal.journal.mealjournal.dao.IngredientDao;
 import meal.journal.mealjournal.dao.MealDao;
+import meal.journal.mealjournal.model.Ingredient;
 import meal.journal.mealjournal.model.Meal;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class MealService {
     private static final Log log = LogFactory.getLog(MealService.class);
 
-    public void getIngredient(String mealName, LocalDate date, JsonNode nutrientsJsonNode,
+    public Ingredient getIngredient(String mealName, LocalDate date, JsonNode nutrientsJsonNode,
                               JsonNode foodJsonNode) throws IOException {
 
         JsonNode totalNutrientsNode = nutrientsJsonNode.get("totalNutrients");
@@ -28,7 +29,7 @@ public class MealService {
             Optional<Meal> optionalMeal = MealDao.getMeal(mealName, date);
             Meal meal = optionalMeal.isEmpty() ? MealDao.insertMeal(mealName, date) : optionalMeal.get();
 
-            createIngredient(nutrientsJsonNode, foodJsonNode, meal);
+            return createIngredient(nutrientsJsonNode, foodJsonNode, meal);
         } else {
             log.error("Something went wrong with getting json");
             throw new IOException();
@@ -46,7 +47,7 @@ public class MealService {
                 10000);
     }
 
-    private void createIngredient(JsonNode nutrientsJsonNode, JsonNode foodJsonNode, Meal meal) throws IOException {
+    private Ingredient createIngredient(JsonNode nutrientsJsonNode, JsonNode foodJsonNode, Meal meal) throws IOException {
 
         String ingrName = nutrientsJsonNode.get("ingredients").get(0).get("parsed").get(0).get("food").asText().toLowerCase();
         String ingrCalories = String.valueOf(Math.round(nutrientsJsonNode.get("calories").asDouble() * 100.0) / 100.0);
@@ -66,7 +67,7 @@ public class MealService {
 
         log.info("Inserting ingredient to database...");
 
-        IngredientDao.insertIngredient(ingrName, ingrCalories, ingrFat,
+        return IngredientDao.insertIngredient(ingrName, ingrCalories, ingrFat,
                 ingrCarbohydrate, ingrProtein, ingrAmount, meal.getId(), image);
     }
 }

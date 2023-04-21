@@ -3,6 +3,7 @@ package meal.journal.mealjournal.controllers;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -69,10 +70,14 @@ public class MainController {
     @FXML
     private Label timeLabel;
 
+    @FXML
+    private ProgressBar progressBar;
+
     public void initialize() {
         MealService mealService = new MealService();
         mealProxy = new MealProxy(mealService);
 
+        progressBar.setVisible(false);
         today = LocalDate.now();
         datePicker.setValue(today);
         choiceBox.setItems(mealNames);
@@ -213,16 +218,34 @@ public class MainController {
         MealName mealName = choiceBox.getValue();
         LocalDate date = datePicker.getValue();
 
-        try {
-            mealProxy.getIngredient(ingredientName, mealName.getMealName(), date);
-        } catch (IOException e) {
+        startAddThread(ingredientName, mealName, date);
+    }
+
+    private void startAddThread(String ingredientName, MealName mealName, LocalDate date) {
+        Task<Ingredient> task = new Task<>() {
+            @Override
+            protected Ingredient call() throws IOException, InterruptedException {
+                progressBar.setVisible(true);
+
+                Ingredient ingredient = mealProxy.getIngredient(ingredientName, mealName.getMealName(), date, progressBar);
+
+                progressBar.setProgress(0.99);
+                Thread.sleep(300);
+                progressBar.setVisible(false);
+                return ingredient;
+            }
+        };
+
+        task.setOnSucceeded(t -> updateWindow());
+        task.setOnFailed(t -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("You cannot add this ingredient");
             alert.showAndWait();
-        }
+        });
 
-        updateWindow();
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML
@@ -241,11 +264,12 @@ public class MainController {
     }
 
     private void updateWindow() {
-        clearTables();
-        ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
+        Platform.runLater(() -> {
+            clearTables();
+            ArrayList<Ingredient> tablesIngredients = addColumnsToTables();
 
-
-        calculateNutrients(tablesIngredients);
+            calculateNutrients(tablesIngredients);
+        });
     }
 
     @FXML
