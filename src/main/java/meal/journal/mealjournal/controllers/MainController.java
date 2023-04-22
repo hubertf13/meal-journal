@@ -242,6 +242,7 @@ public class MainController {
             alert.setTitle("Error");
             alert.setHeaderText("You cannot add this ingredient");
             alert.showAndWait();
+            progressBar.setVisible(false);
         });
 
         Thread thread = new Thread(task);

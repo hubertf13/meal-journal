@@ -65,40 +65,13 @@ public class IngredientDao {
         }
     }
 
-    public static void update(Ingredient newIngredient) {
-        //udpate database
-        long rows = CRUDHelper.update(
-                tableName,
-                new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountColumn, mealId, image},
-                new Object[]{newIngredient.getName(), newIngredient.getCalories(), newIngredient.getFat(), newIngredient.getCarbohydrate(), newIngredient.getProtein(), newIngredient.getAmount(), newIngredient.getMealId(), newIngredient.getImage()},
-                new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.INTEGER, Types.VARCHAR},
-                idColumn,
-                Types.INTEGER,
-                newIngredient.getId()
-        );
-
-        if (rows == 0)
-            throw new IllegalStateException("Ingredient to be updated with id " + newIngredient.getId() + " didn't exist in database");
-
-        //update cache
-        Optional<Ingredient> optionalIngredient = getIngredient(newIngredient.getId());
-        optionalIngredient.ifPresentOrElse((oldIngredient) -> {
-            ingredients.remove(oldIngredient);
-            ingredients.add(newIngredient);
-        }, () -> {
-            throw new IllegalStateException("Ingredient to be updated with id " + newIngredient.getId() + " didn't exist in database");
-        });
-    }
-
     public static Ingredient insertIngredient(String name, String calories, String fat, String carbohydrate, String protein, String amount, int inMealId, String img) {
-        //update database
         int id = (int) CRUDHelper.create(
                 tableName,
                 new String[]{nameColumn, caloriesColumn, fatColumn, carbohydrateColumn, proteinColumn, amountColumn, mealId, image},
                 new Object[]{name, calories, fat, carbohydrate, protein, amount, inMealId, img},
                 new int[]{Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.INTEGER, Types.VARCHAR});
 
-        //update cache
         Ingredient ingredient = new Ingredient(id, name, calories, fat, carbohydrate, protein, amount, inMealId, img);
         ingredients.add(ingredient);
 
@@ -106,10 +79,8 @@ public class IngredientDao {
     }
 
     public static void delete(int id) {
-        //update database
         CRUDHelper.delete(tableName, id);
 
-        //update cache
         Optional<Ingredient> ingredient = getIngredient(id);
         ingredient.ifPresent(ingredients::remove);
 

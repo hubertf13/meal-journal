@@ -1,8 +1,6 @@
 package meal.journal.mealjournal.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import meal.journal.mealjournal.MealsApplication;
 import meal.journal.mealjournal.dao.IngredientDao;
 import meal.journal.mealjournal.dao.MealDao;
 import meal.journal.mealjournal.model.Ingredient;
@@ -13,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -22,7 +19,7 @@ public class MealService {
     private static final Log log = LogFactory.getLog(MealService.class);
 
     public Ingredient getIngredient(String mealName, LocalDate date, JsonNode nutrientsJsonNode,
-                              JsonNode foodJsonNode) throws IOException {
+                                    JsonNode foodJsonNode) throws IOException {
 
         JsonNode totalNutrientsNode = nutrientsJsonNode.get("totalNutrients");
         if (totalNutrientsNode.size() != 0) {

@@ -14,12 +14,12 @@ public class Database {
     public static boolean isOK() {
         DATABASE_LOCATION = MealsApplication.getDatabaseLocation();
         if (!checkDrivers())
-            return false; //driver errors
+            return false;
 
         if (!checkConnection())
-            return false; //can't connect to db
+            return false;
 
-        return checkTables(); //tables didn't exist
+        return checkTables();
     }
 
     private static boolean checkTables() {
@@ -43,29 +43,31 @@ public class Database {
             return false;
         }
 
-        String createTableMealStmt = "CREATE TABLE IF NOT EXISTS meal\n" +
-                "(\n" +
-                "    id   INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                "    name VARCHAR(255) NOT NULL,\n" +
-                "    date NUMERIC NOT NULL\n" +
-                ");";
-        String createTableIngredientStmt = "CREATE TABLE IF NOT EXISTS ingredient\n" +
-                "(\n" +
-                "    id           INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                "    name         VARCHAR(255) NOT NULL,\n" +
-                "    calories     NUMERIC      NOT NULL,\n" +
-                "    fat          NUMERIC      NOT NULL,\n" +
-                "    carbohydrate NUMERIC      NOT NULL,\n" +
-                "    protein      NUMERIC      NOT NULL,\n" +
-                "    amount       VARCHAR(255) NOT NULL,\n" +
-                "    meal_id      INTEGER      NOT NULL,\n" +
-                "    FOREIGN KEY (meal_id) REFERENCES meal (id)\n" +
-                ");";
+        String createTableMealStmt = """
+                CREATE TABLE IF NOT EXISTS meal
+                (
+                    id   INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    date NUMERIC NOT NULL
+                );""";
+        String createTableIngredientStmt = """
+                CREATE TABLE IF NOT EXISTS ingredient
+                (
+                    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name         VARCHAR(255) NOT NULL,
+                    calories     NUMERIC      NOT NULL,
+                    fat          NUMERIC      NOT NULL,
+                    carbohydrate NUMERIC      NOT NULL,
+                    protein      NUMERIC      NOT NULL,
+                    amount       VARCHAR(255) NOT NULL,
+                    meal_id      INTEGER      NOT NULL,
+                    FOREIGN KEY (meal_id) REFERENCES meal (id)
+                );""";
 
         try (Connection connection = Database.connect()) {
             if (connection != null) {
                 Statement stmt = connection.createStatement();
-                // create a new table
+
                 stmt.execute(createTableMealStmt);
                 stmt.execute(createTableIngredientStmt);
 

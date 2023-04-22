@@ -72,61 +72,17 @@ public class MealDao {
                 .toList();
     }
 
-    public static void update(Meal newMeal) {
-        //udpate database
-        long rows = CRUDHelper.update(
-                tableName,
-                new String[]{nameColumn, dateColumn},
-                new Object[]{newMeal.getName(), newMeal.getDate()},
-                new int[]{Types.VARCHAR, Types.NUMERIC},
-                idColumn,
-                Types.INTEGER,
-                newMeal.getId()
-        );
-
-        if (rows == 0)
-            throw new IllegalStateException("Meal to be updated with id " + newMeal.getId() + " didn't exist in database");
-
-        //update cache
-        Optional<Meal> optionalMeal = getMeal(newMeal.getId());
-        optionalMeal.ifPresentOrElse((oldMeal) -> {
-            meals.remove(oldMeal);
-            meals.add(newMeal);
-        }, () -> {
-            throw new IllegalStateException("Meal to be updated with id " + newMeal.getId() + " didn't exist in database");
-        });
-    }
-
     public static Meal insertMeal(String name, LocalDate date) {
-        //update database
         int id = (int) CRUDHelper.create(
                 tableName,
                 new String[]{nameColumn, dateColumn},
                 new Object[]{name, date},
                 new int[]{Types.VARCHAR, Types.NUMERIC});
 
-        //update cache
         Meal meal = new Meal(id, name, date, new ArrayList<>());
         meals.add(meal);
 
         return meal;
-    }
-
-    public static void delete(int id) {
-        //update database
-        CRUDHelper.delete(tableName, id);
-
-        //update cache
-        Optional<Meal> meal = getMeal(id);
-        meal.ifPresent(meals::remove);
-
-    }
-
-    public static Optional<Meal> getMeal(int id) {
-        for (Meal meal : meals) {
-            if (meal.getId() == id) return Optional.of(meal);
-        }
-        return Optional.empty();
     }
 
     public static Optional<Meal> getMeal(String mealName, LocalDate date) {
