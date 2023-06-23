@@ -240,7 +240,7 @@ public class MainController {
         task.setOnFailed(t -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("You cannot add this ingredient");
+            alert.setHeaderText("Ingredient has not been added");
             alert.showAndWait();
             progressBar.setVisible(false);
         });
